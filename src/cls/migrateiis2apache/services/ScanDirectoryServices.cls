@@ -6,21 +6,24 @@ Class migrateiis2apache.services.ScanDirectoryServices
 		Return list
 	}
 	
-	ClassMethod recursiveFileList(directory As %String, fileList As %List = { "" })
+	ClassMethod recursiveFileList(directory As %String, fileList As %List = { "" }) As %Status
 	{
-		Set tSc = $$$OK, tSqlStatement = ##class(%SQL.Statement).%New()
-		$$$TOE(tSc,tSqlStatement.%PrepareClassQuery("%File","FileSet"))
+		Set tSqlStatement = ##class(%SQL.Statement).%New(),
+		    tSc = tSqlStatement.%PrepareClassQuery("%File","FileSet")
+		Return:$$$ISERR(tSc) tSc
 		Set tResult = tSqlStatement.%Execute(directory)
 		;Do tResult.%Display()
 		While (tResult.%Next()) {
 			If (tResult.%Get("Type")="D") {
-				Write tResult.%Get("Name"),!
-				Do ..recursiveFileList(tResult.%Get("Name"),.fileList)
+				;Write tResult.%Get("Name"),!
+				Set tSc = ..recursiveFileList(tResult.%Get("Name"),.fileList)
+				Return:$$$ISERR(tSc) tSc
 			}Else{
 				Set $List(fileList,$Listlength(fileList)+1)=tResult.%Get("Name")
 			}
 		}
-		Return
+		Kill tSqlStatement,tResult
+		Return tSc
 	}
 	
 	ClassMethod getRelativePath(webFilesDirectory As %String,fileName As %String) As %String
