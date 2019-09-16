@@ -1,4 +1,11 @@
-# cos-repo-template
+# migrateiisapache
+
+This is an helper for migrate your webapps to apache.  
+The purpose is to find and fix all static files references  
+if the case is incorrect.  As you know apache and linux filesystem
+are case sensitive.  If you're application has been developped and installed on Windows  
+and IIS web server, may be you encounter a problem with the case.  
+This tools, check all references in your repository and fix your with the correct case. 
 
 
 ## Getting Started
@@ -39,7 +46,7 @@ ZN "USER"
 ## Built With
 
 * Iris for Health 2019.2
-* Write $zv : 
+* Write $zv : IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2019.2 (Build 109U) Fri Jul 26 2019 09:19:03 EDT
 * Version: Photon Release (4.8.0) Build id: 20180619-1200
 * Atelier 1.3 (see https://download.intersystems.com/download/atelier.csp for install instructions)
 
