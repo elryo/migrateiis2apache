@@ -1,6 +1,6 @@
 Class migrateiis2apache.services.ScanDirectoryServices
 {
-	ClassMethod getWebFilesList(webFilesDirectory As %String) As %List
+	ClassMethod getWebFilesList(webFilesDirectory As %String,excludeFileType As %List = { "" }) As %List
 	{
 		Do ..recursiveFileList(webFilesDirectory,.list)
 		Return list
@@ -30,5 +30,14 @@ Class migrateiis2apache.services.ScanDirectoryServices
 	{
 		Set normalizedDir = ##class(%File).NormalizeDirectory(webFilesDirectory)
 		Return "."_$Extract(fileName,$Length(normalizedDir),*)
+	}
+	
+	ClassMethod test(dir As %String = "/usr/irissys/csp/ALPHACARE") As %Status
+	{
+		Set list = ..getWebFilesList(dir),ptr=0
+		While ($Listnext(list,ptr,value)) {
+			Write ..getRelativePath(.dir,.value),!
+		}
+		Return $$$OK
 	}
 }
