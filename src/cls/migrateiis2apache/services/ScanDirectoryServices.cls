@@ -3,7 +3,12 @@ Class migrateiis2apache.services.ScanDirectoryServices
 	ClassMethod getWebFilesList(webFilesDirectory As %String,excludeFileType As %List = { "" }) As %List
 	{
 		Do ..recursiveFileList(webFilesDirectory,.list)
-		Return list
+		;q list
+		Set ptr = 0, rList = ""
+		While ($Listnext(list,ptr,value)) {
+			Set $List(rList,$ll(rList)+1)=..getRelativePath(webFilesDirectory,value)
+		}
+		Return rList
 	}
 	
 	ClassMethod recursiveFileList(directory As %String, fileList As %List = { "" }) As %Status
@@ -29,7 +34,7 @@ Class migrateiis2apache.services.ScanDirectoryServices
 	ClassMethod getRelativePath(webFilesDirectory As %String,fileName As %String) As %String
 	{
 		Set normalizedDir = ##class(%File).NormalizeDirectory(webFilesDirectory)
-		Return "."_$Extract(fileName,$Length(normalizedDir),*)
+		Return $Extract(fileName,$Length(normalizedDir),*)
 	}
 	
 	ClassMethod test(dir As %String = "/usr/irissys/csp/ALPHACARE") As %Status
