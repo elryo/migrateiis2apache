@@ -1,29 +1,37 @@
 Class migrateiis2apache.services.ScanDirectoryServices
 {
-	ClassMethod getWebFilesList(webFilesDirectory As %String,excludeFileType As %List = { "" }) As %List
+	ClassMethod getWebFilesList(
+		webFilesDirectory As %String,
+		wildcards As %String = {"*.js;*.css;*.jpg;*.png;*.gif;*.xml;*.xsl;*.jar;*.csp;*.csr;*.html;*.htm;*.pdf"}) As %List
 	{
-		Do ..recursiveFileList(webFilesDirectory,.list)
-		;q list
+		Do ..recursiveFileList(webFilesDirectory,.list,wildcards)
 		Set ptr = 0, rList = ""
 		While ($Listnext(list,ptr,value)) {
-			Set $List(rList,$ll(rList)+1)=..getRelativePath(webFilesDirectory,value)
+			;w value,!
+			Set $List(rList,$Listlength(rList)+1)=..getRelativePath(webFilesDirectory,value)
 		}
 		Return rList
 	}
 	
-	ClassMethod recursiveFileList(directory As %String, fileList As %List = { "" }) As %Status
+	ClassMethod getSourceFileList(
+		sourceFileDirectory As %String,
+		wildcards As %String = { "*.js;*.css;*.xml;*.xsl;*.csp;*.csr;*.html;*.htm" }) As %List
+	{
+		Do ..recursiveFileList(sourceFileDirectory,.list,wildcards)
+		Return list
+	}
+	
+	ClassMethod recursiveFileList(directory As %String, fileList As %List = { "" }, wildcards As %String="*") As %Status
 	{
 		Set tSqlStatement = ##class(%SQL.Statement).%New(),
 		    tSc = tSqlStatement.%PrepareClassQuery("%File","FileSet")
 		Return:$$$ISERR(tSc) tSc
-		Set tResult = tSqlStatement.%Execute(directory)
-		;Do tResult.%Display()
+		Set tResult = tSqlStatement.%Execute(directory,wildcards,,1)
 		While (tResult.%Next()) {
 			If (tResult.%Get("Type")="D") {
-				;Write tResult.%Get("Name"),!
-				Set tSc = ..recursiveFileList(tResult.%Get("Name"),.fileList)
+				Set tSc = ..recursiveFileList(tResult.%Get("Name"),.fileList,.wildcards)
 				Return:$$$ISERR(tSc) tSc
-			}Else{
+			} Else {
 				Set $List(fileList,$Listlength(fileList)+1)=tResult.%Get("Name")
 			}
 		}
@@ -35,14 +43,5 @@ Class migrateiis2apache.services.ScanDirectoryServices
 	{
 		Set normalizedDir = ##class(%File).NormalizeDirectory(webFilesDirectory)
 		Return $Extract(fileName,$Length(normalizedDir),*)
-	}
-	
-	ClassMethod test(dir As %String = "/usr/irissys/csp/ALPHACARE") As %Status
-	{
-		Set list = ..getWebFilesList(dir),ptr=0
-		While ($Listnext(list,ptr,value)) {
-			Write ..getRelativePath(.dir,.value),!
-		}
-		Return $$$OK
 	}
 }
