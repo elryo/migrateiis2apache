@@ -39,41 +39,6 @@ Class migrateiis2apache.RefFindAndReplace Extends %RegisteredObject
   	Return $$$OK
  }
  
- 
- ClassMethod test() As %Status
- {
- 	#dim rf As migrateiis2apache.RefFindAndReplace
- 	;"/xcare/databases/replace-report.json"
- 	Set tSc = $$$OK
- 	Try{
- 		;/usr/irissys/csp/ALPHACARE/
- 		Set rf = ##class(migrateiis2apache.RefFindAndReplace).%New("/usr/irissys/csp/ALPHACARE/","/xcare/git-data/care_core/",1)
- 		$$$TOE(tSc,rf.find())
- 		w !
- 		Do rf.getFindReportSummary().%ToJSON()
- 		
- 		;Do rf.getFindReportDetail().%ToJSON()
- 		$$$TOE(tSc,rf.replace())
- 		w !
- 		Do rf.getReplaceReportSummary().%ToJSON()
- 	}Catch(ex) {
- 		Set tSc = ex.AsStatus()
- 	}
- 	Write !,$SYSTEM.Status.GetOneErrorText(tSc)
-  	Return tSc
- }
- 
- ClassMethod testFile() As %Status
- {
- 	#dim rf As RefFindAndReplace
- 	Set rf = ##class(migrateiis2apache.RefFindAndReplace).%New("/usr/irissys/csp/ALPHACARE/"/*"/xcare/git-data/care_core/Csp/"*/,"/xcare/git-data/care_core/",1)
- 	Set rf.verbose = 1
- 	Set rf.fileReferences("/css/jquery/jquery-ui-3_1.css")="/css/jquery/jQuery-ui-3_1.css"
- 	Set dyn = rf.findInFile("/xcare/git-data/care_core/Csp/bDoc.csp.xml")
- 	zw dyn
-  	Return $$$OK
- }
- 
  /// Perform a search of all "case" mistake in source code directory <br/>
  Method find() As %Status
  {

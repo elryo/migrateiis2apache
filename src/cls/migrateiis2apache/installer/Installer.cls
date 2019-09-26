@@ -1,5 +1,7 @@
-/// source : https://github.com/intersystems-community/objectscript-docker-template/blob/master/Installer.cls
-Class App.Installer
+Include %occInclude
+
+/// %Installer Manifest migrateiis2apache.installer.Installer
+Class migrateiis2apache.installer.Installer
 {
 
 XData MyInstall [ XMLNamespace = INSTALLER ]
@@ -32,8 +34,8 @@ XData MyInstall [ XMLNamespace = INSTALLER ]
 }
 
 /*
-	Set pVars("NAMESPACE")=""
-	Set pVars("DBNAME")=""
+	Set pVars("NAMESPACE")="MIGRATEIIS2APACHE"
+	Set pVars("DBNAME")="MIGRATEIIS2APACHE"
 	Set pVars("APPPATH")=""
 	Set pVars("SOURCESPATH")=""
 	Set pVars("RESOURCE")=""
