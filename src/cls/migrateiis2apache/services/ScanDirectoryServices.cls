@@ -8,7 +8,7 @@ Class migrateiis2apache.services.ScanDirectoryServices
 		Set ptr = 0, rList = ""
 		While ($Listnext(list,ptr,value)) {
 			;w value,!
-			Set $List(rList,$Listlength(rList)+1)=..getRelativePath(webFilesDirectory,value)
+			Set $List(rList,$Listlength(rList)+1)=$Translate(..getRelativePath(webFilesDirectory,value),"\","/")
 		}
 		Return rList
 	}
