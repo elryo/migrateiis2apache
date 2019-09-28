@@ -22,7 +22,7 @@ Do $SYSTEM.OBJ.Load("<repository_path>/src/cls/migrateiis2apache/installer/Insta
 ```
 ## Launch Installer
 
-Simple install in "USER" namespace:
+Simple install in "USER" namespace:  
 
 ```
 Zn "USER"
@@ -32,6 +32,22 @@ Set tSc = ##class(migrateiis2apache.installer.Installer).setup(.pVars)
 Write !,"Install Status : ",$SYSTEM.Status.GetOneErrorText(tSc)
 ```
 
+Or into a dedicated namespace :  
+
+```
+Zn "USER"
+
+
+Set pVars("NAMESPACE")="MIGRATEIIS2APACHE"
+Set pVars("DBNAME")="MIGRATEIIS2APACHE"	
+Set pVars("APPPATH")="<repository_path>"
+Set pVars("DBDATAPATH")="<database path>"	; if not defined MGRDIR is used by default
+Set pVars("DBCODEPATH")="" ; if not defined MGRDIR is used by default
+
+Do ##class(migrateiis2apache.installer.Installer).normalizeDir(.pVars)
+Set tSc = ##class(migrateiis2apache.installer.Installer).setup(.pVars)
+Write !,"Install Status : ",$SYSTEM.Status.GetOneErrorText(tSc)
+```
 
 ## How to use
 
