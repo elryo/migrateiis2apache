@@ -1,47 +1,60 @@
-# migrateiisapache
+# migrateiis2apache
 
 This is an helper for migrate your webapps to apache.  
-The purpose is to find and fix all static files references  
-if the case is incorrect.  As you know apache and linux filesystem
-are case sensitive.  If you're application has been developped and installed on Windows  
-and IIS web server, may be you encounter a problem with the case.  
-This tools, check all references in your repository and fix your with the correct case. 
+The purpose is find and fix all static files references  
+if the case is incorrect.  As you know apache and linux filesystem are case sensitive.  
+If you're application has been developped and installed on Windows  
+and IIS web server, may be you encounter a problem with the case for migrate to apache and docker.  
+This tools, check all static references from your webapp directory and fix the correct case in your source files.  
 
 
-## Getting Started
+## Install
 
+Clone migrateiis2apache repository.  
 
-### Prerequisites
+## Import Installer
 
-* list
+Open a terminal.  
 
-### Installing (for develop)
-
-#### Step 1
-
-The latest release is available [here](https://github.com/).  
-
-#### Step 2
-
-
-Open a terminal
 ```
-ZN "USER"
+Zn "USER"
+Do $SYSTEM.OBJ.Load("<repository_path>/src/cls/migrateiis2apache/installer/Installer.cls","ck")
 ```
+## Launch Installer
 
-## Running the tests
+Simple install in "USER" namespace:
 
-
-
-### Break down into end to end tests
+```
+Zn "USER"
+Set pVars("APPPATH")="<repository_path>"
+Do ##class(migrateiis2apache.installer.Installer).normalizeDir(.pVars)
+Set tSc = ##class(migrateiis2apache.installer.Installer).setup(.pVars)
+Write !,"Install Status : ",$SYSTEM.Status.GetOneErrorText(tSc)
+```
 
 
 ## How to use
 
+### Find bad references
+
+Find bad references without repair.
+
+```
+Set sourceDir = "<source_to_repair_directory>"	; usually a git directory 
+Set webAppDir = "<webapp_directory>" ; web directory contains static files
+Set findReportDir = "" ; If set, a find report is written within specified directory.
+Set report = ##class(migrateiis2apache.services.RepairCaseServices).findCaseError(sourceDir,webAppDir,,,findReportDir)
+```
+
+### Find and repair bad references
 
 
-## Deployment
-
+```
+Set sourceDir = "<source_to_repair_directory>"	; usually a git directory 
+Set webAppDir = "<webapp_directory>" ; web directory contains static files
+Set findReportDir = "" ; If set, a find report is written within specified directory.
+Set report = ##class(migrateiis2apache.services.RepairCaseServices).findAndRepairCaseError(sourceDir,webAppDir,,,findReportDir)
+```
 
 ## Built With
 
@@ -52,13 +65,13 @@ ZN "USER"
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/elryo/GlobalGrowthTracing/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/elryo/migrateiis2apache/tags). 
 
 ## Authors
 
 * **Lorenzo Scalese** - *Initial work* - [elryo](https://github.com/elryo)
 
-See also the list of [contributors](https://github.com/elryo/GlobalGrowthTracing/contributors) who participated in this project.  
+See also the list of [contributors](https://github.com/elryo/migrateiis2apache/contributors) who participated in this project.  
 
 ## License
 

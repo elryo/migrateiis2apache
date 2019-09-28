@@ -12,13 +12,13 @@ Class migrateiis2apache.services.RepairCaseServices
  	$$$TOE(tSc,rf.find())
  	
  	If (dumpReportDirectory'="") {
-  		$$$TOE(tSc,..dumpAllReport(rf,dumpReportDirectory))
+  		$$$TOE(tSc,..dumpFindReport(rf,dumpReportDirectory))
   	}
  	
  	Return $Select(detailMode:rf.getFindReportDetail(),1:rf.getFindReportSummary())
  }
  
- ClassMethod findAndReplaceCaseError(
+ ClassMethod findAndRepairCaseError(
  	gitSourceDirectory As %String, 
  	webFileDirectory As %String, 
  	detailMode As %Boolean=1,
@@ -35,6 +35,19 @@ Class migrateiis2apache.services.RepairCaseServices
   	}
   	
   	Return $Select(detailMode:rf.getReplaceReportDetail(),1:rf.getReplaceReportSummary())
+ }
+ 
+ ClassMethod dumpFindReport(rf As migrateiis2apache.RefFindAndReplace, directory As %String) As %Status [ Private ]
+ {
+ 	Set tSc = $$$OK, normalizedDirectory = ##class(%File).NormalizeDirectory(directory)
+  	Try{
+  		Set ts = $tr($zdt($h,8),"-: ","")
+  		$$$TOE(tSc,..dumpJSONtoFile(rf.getFindReportDetail(),normalizedDirectory_"FindReportDetail-"_ts_".json"))
+  		$$$TOE(tSc,..dumpJSONtoFile(rf.getFindReportSummary(),normalizedDirectory_"FindReportSummary-"_ts_".json"))
+  	}Catch(ex) {
+  		Set tSc = e.AsStatus()
+  	}
+  	Return tSc
  }
  
  ClassMethod dumpAllReport(rf As migrateiis2apache.RefFindAndReplace, directory As %String) As %Status [ Private ]
